@@ -10,10 +10,10 @@ function App() {
         receiverCardNumber="1234-5678-9012-3456"
         trackingCode="1234567890"
         paidDate="2024-01-01"
-        paymentMethod="Credit Card"
-        issuerFullName="Bank of America"
-        paidPrice={100}
-        status="rejected"
+        paymentMethod="کارت به کارت"
+        issuerFullName="شسشسی شسی"
+        paidPrice={10000000}
+        status="pending"
         description="This is a test description"
       />
     </div>

@@ -1,12 +1,12 @@
 import {
   Box,
   Card,
-  CardContent,
   Divider,
+  Stack,
   TextField,
   Typography,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { alpha, styled, Theme } from "@mui/material/styles";
 import React from "react";
 
 interface PaymentCardProps {
@@ -28,6 +28,10 @@ const StatusBox = styled(Box)(({ theme }) => ({
   padding: theme.spacing(1),
   textAlign: "center",
   marginTop: theme.spacing(2),
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: 5,
 }));
 
 const PaymentCard: React.FC<PaymentCardProps> = ({
@@ -55,132 +59,166 @@ const PaymentCard: React.FC<PaymentCardProps> = ({
     }
   };
 
+  const getPaidPriceTextColor = (status: string) => {
+    switch (status) {
+      case "successful":
+        return (theme: Theme) => alpha(theme.palette.success.light, 0.2);
+      case "pending":
+        return (theme: Theme) => alpha(theme.palette.warning.light, 0.2);
+      case "rejected":
+        return (theme: Theme) => alpha(theme.palette.error.light, 0.2);
+      default:
+        return (theme: Theme) => alpha(theme.palette.text.primary, 0.2);
+    }
+  };
+
   return (
-    <Card sx={{ maxWidth: 400, margin: "auto", padding: 2 }}>
-      <CardContent>
-        {/* Image */}
-        <Box
-          sx={{
-            width: "100%",
-            height: 150,
-            backgroundImage: `url(${imagesUrl})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            border: "1px solid #ccc",
-            marginBottom: 2,
-          }}
-        />
+    <Card
+      sx={{
+        p: 2,
+        borderRadius: 1,
+      }}
+    >
+      {/* Image */}
+      <Box // TODO: change with next Image component
+        sx={{
+          height: 300,
+          backgroundImage: `url(${imagesUrl})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          border: "1px solid #ccc",
+          borderRadius: "6px",
+          marginBottom: 2,
+        }}
+      />
 
-        {/* Description for rejected status */}
-        {status === "rejected" && description && (
-          <TextField
-            label="توضیحات"
-            value={description}
-            multiline
-            rows={3}
-            fullWidth
-            variant="outlined"
-            sx={{ marginBottom: 2 }}
-          />
-        )}
-
-        {/* Card Numbers */}
+      {/* Description for rejected status */}
+      {status === "rejected" && description && (
         <TextField
-          label="از شماره کارت"
-          value={senderCardNumber}
+          label="توضیحات"
+          value={description}
+          multiline
+          rows={3}
           fullWidth
           variant="outlined"
-          InputProps={{ readOnly: true }}
           sx={{ marginBottom: 2 }}
         />
-        <TextField
-          label="به شماره کارت"
-          value={receiverCardNumber}
-          fullWidth
-          variant="outlined"
-          InputProps={{ readOnly: true }}
-          sx={{ marginBottom: 2 }}
-        />
+      )}
 
+      {/* Card Numbers */}
+      <TextField
+        label="از شماره کارت"
+        value={senderCardNumber}
+        fullWidth
+        variant="outlined"
+        InputProps={{ readOnly: true }}
+        sx={{ marginBottom: 2 }}
+      />
+      <TextField
+        label="به شماره کارت"
+        value={receiverCardNumber}
+        fullWidth
+        variant="outlined"
+        InputProps={{ readOnly: true }}
+        sx={{ marginBottom: 2 }}
+      />
+      <Stack
+        direction={"row"}
+        justifyContent={"space-between"}
+        alignItems={"center"}
+      >
         {/* Tracking Code */}
         <Typography
-          variant="body2"
-          sx={{ fontWeight: "bold", marginBottom: 1 }}
-        >
-          کد رهگیری:
-          <Typography
-            component="span"
-            sx={{ fontWeight: "normal", marginRight: 1 }}
-          >
-            {trackingCode}
-          </Typography>
-        </Typography>
-        <Divider sx={{ opacity: 0.5, marginBottom: 2 }} />
-
-        {/* Paid Date */}
-        <Typography
-          variant="body2"
-          sx={{ fontWeight: "bold", marginBottom: 1 }}
-        >
-          زمان واریز:
-          <Typography
-            component="span"
-            sx={{ fontWeight: "normal", marginRight: 1 }}
-          >
-            {paidDate}
-          </Typography>
-        </Typography>
-        <Divider sx={{ opacity: 0.5, marginBottom: 2 }} />
-
-        {/* Payment Method */}
-        <Typography
-          variant="body2"
-          sx={{ fontWeight: "bold", marginBottom: 1 }}
-        >
-          روش پرداخت:
-          <Typography
-            component="span"
-            sx={{ fontWeight: "normal", marginRight: 1 }}
-          >
-            {paymentMethod}
-          </Typography>
-        </Typography>
-
-        {/* Issuer Full Name */}
-        <Typography
-          variant="body2"
-          sx={{ fontWeight: "bold", marginBottom: 1 }}
-        >
-          کارشناس ثبت کننده:
-          <Typography
-            component="span"
-            sx={{ fontWeight: "normal", marginRight: 1 }}
-          >
-            {issuerFullName}
-          </Typography>
-        </Typography>
-
-        {/* Paid Price */}
-        <Typography
-          variant="body2"
           sx={{
-            fontWeight: "bold",
-            marginTop: 2,
-            color: getStatusColor(status),
+            color: (theme) => theme.palette.text.secondary,
+            fontSize: "14px",
           }}
         >
-          مبلغ پرداخت شده: {paidPrice.toLocaleString()} تومان
+          کد رهگیری:
         </Typography>
+        <Typography>{trackingCode}</Typography>
+      </Stack>
+      <Divider sx={{ opacity: 0.5, marginBottom: 2 }} />
 
-        {/* Status */}
-        <StatusBox sx={{ backgroundColor: getStatusColor(status) }}>
+      {/* Paid Date */}
+      <Stack
+        direction={"row"}
+        justifyContent={"space-between"}
+        alignItems={"center"}
+      >
+        <Typography
+          sx={{
+            color: (theme) => theme.palette.text.secondary,
+            fontSize: "14px",
+          }}
+        >
+          زمان واریز:
+        </Typography>
+        <Typography>{paidDate}</Typography>
+      </Stack>
+      <Divider sx={{ opacity: 0.5, marginBottom: 2 }} />
+
+      {/* Payment Method */}
+      <Stack
+        direction={"row"}
+        justifyContent={"space-between"}
+        alignItems={"center"}
+      >
+        <Typography
+          sx={{
+            color: (theme) => theme.palette.text.secondary,
+            fontSize: "14px",
+          }}
+        >
+          روش پرداخت:
+        </Typography>
+        <Typography>{paymentMethod}</Typography>
+      </Stack>
+      <Divider sx={{ opacity: 0.5, marginBottom: 2 }} />
+      {/* Issuer Full Name */}
+      <Stack
+        direction={"row"}
+        justifyContent={"space-between"}
+        alignItems={"center"}
+      >
+        <Typography
+          sx={{
+            color: (theme) => theme.palette.text.secondary,
+            fontSize: "14px",
+          }}
+        >
+          کارشناس ثبت کننده:
+        </Typography>
+        <Typography>{issuerFullName}</Typography>
+      </Stack>
+      <Divider sx={{ opacity: 0.5, marginBottom: 2 }} />
+      {/* Paid Price */}
+      <Typography
+        variant="body2"
+        sx={{
+          fontWeight: "bold",
+          marginTop: 2,
+          color: getStatusColor(status),
+          backgroundColor: getPaidPriceTextColor(status),
+          borderRadius: 1,
+          padding: 1,
+          textAlign: "center",
+        }}
+      >
+        مبلغ پرداخت شده : {paidPrice.toLocaleString()} تومان
+      </Typography>
+
+      {/* Status */}
+      <StatusBox sx={{ backgroundColor: getStatusColor(status) }}>
+        <Typography>وضعیت : </Typography>
+        <Typography>
           {status === "successful"
             ? "تایید شده"
             : status === "pending"
             ? "در انتظار"
             : "رد شده"}
-        </StatusBox>
-      </CardContent>
+        </Typography>
+      </StatusBox>
     </Card>
   );
 };
